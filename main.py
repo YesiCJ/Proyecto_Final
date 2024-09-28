@@ -173,7 +173,7 @@ def obtener_respuesta(prompt):
     return output
 
 
-prompt_user=st.text.area("Ingresa tu pregunta: ")
+prompt_user=st.text_area("Ingresa tu pregunta: ")
 #Obtener la respuesta del modelo
 output_modelo = obtener_respuesta(prompt_user)
 
