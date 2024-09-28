@@ -5,7 +5,7 @@ import pandas as pd
 import plotly.express as px
 import seaborn as sns
 import streamlit as st
-
+import openai
 
 # Cargar datos desde GitHub
 st.set_page_config(layout="centered")
@@ -150,6 +150,39 @@ st.plotly_chart(fig)
 fig = px.pie(df_filtered, names='Company_Size', title='Proporción de empresas por Tamaño', hole=0.3)
 # Mostrar gráfica (en Streamlit o en otro entorno)
 st.plotly_chart(fig)
+
+######################################################
+
+# Instanciar el cliente de OpenAI
+openai_api_key=st.secrets["OPENAI_API_KEY"]
+ client = openai.OpenAI(api_key=openai_api_key)
+
+def obtener_respuesta(prompt):
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",  # Ajusta el modelo según lo que necesites
+        messages=[
+            {"role": "system", "content": """
+            Eres un financiero que trabaja para la aseguradora patito, eres experto en el área de solvencia,
+            entonces vas a responder todo desde la perspectiva de la aseguradora. Contesta siempre en español
+            en un máximo de 50 palabras.
+            """}, #Solo podemos personalizar la parte de content
+            {"role": "user", "content": prompt}
+        ]
+    )
+    output = response.choices[0].message.content
+    return output
+
+
+prompt_user=st.text.area("Ingresa tu pregunta: ")
+#Obtener la respuesta del modelo
+output_modelo = obtener_respuesta(prompt_user)
+
+#Mostrar la respesta del modelo
+st.write(output_modelo)
+
+
+
+
 
 
 
